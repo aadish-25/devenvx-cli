@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+
+# Output/compiled folders (if using pkg/nexe later)
+dist/
+build/
+
+# CLI cache or temp folders (if added later)
+.cache/
+*.tmp
+
+# Binaries or scripts you may generate
+*.exe
+*.ps1.bak
+
+# Optional test artifacts
+coverage/

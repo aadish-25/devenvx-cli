@@ -5,6 +5,14 @@ import chalk from "chalk";
 import figlet from "figlet";
 import ora from "ora";
 
+import { exec } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const program = new Command()
 
 program
@@ -32,6 +40,18 @@ program.command('install [languages...]')
     .description('Used to install environments for selected languages')
     .action((languages) => {
         console.log(chalk.green(`📦 Installing: `) + chalk.yellow(languages.join(', ')));
+
+        if (languages.includes('cpp')) {
+            const scriptPath = path.join(__dirname, '../installers/install_cpp.ps1');
+            exec(`powershell -ExecutionPolicy Bypass -File "${scriptPath}"`, (err, stdout, stderr) => {
+                if (err) {
+                    console.error(chalk.red('❌ Error running install_cpp.ps1'));
+                    console.error(chalk.gray(stderr));
+                    return;
+                }
+                console.log(chalk.green(stdout));
+            });
+        }
     })
 
 program.command('verify [languages...]')

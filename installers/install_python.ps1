@@ -37,7 +37,7 @@ function Show-DownloadProgress {
 }
 
 # checking if python is already installed
-Write-Host "`n[INFO]  Checking if Python is already installed..." 
+Write-Host "`n[INFO] Checking if Python is already installed..." 
 try {
     $version = python --version 2>&1
     if ($version -match "^Python\s+\d+\.\d+") {
@@ -71,7 +71,7 @@ Show-DownloadProgress -inputStream $stream -totalBytes $totalBytes -outputPath $
 # installing python from the .exe file installed previosuly
 Write-Host "`n[INFO] Installing Python silently with PATH access..."
 try {
-    Start-Process `zzzz
+    Start-Process `
         -FilePath $installerPath `
         -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", "Include_test=0" `
         -Wait `
@@ -105,6 +105,7 @@ $helloScript = Join-Path $PSScriptRoot "..\scripts\hello.py"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] hello.py execution failed." -ForegroundColor Red
 } else {
+    Write-Host ""
     Write-Host -ForegroundColor Green "`[SUCCESS] Python has been successfully installed and verified!"
 }
 

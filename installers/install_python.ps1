@@ -44,10 +44,12 @@ try {
         Write-Host "[SUCCESS] Python is already installed: $version" -ForegroundColor Green
         Write-Host ""
         exit 0
-    } else {
+    }
+    else {
         Write-Host "[FAIL] Python is not installed." -ForegroundColor Red
     }
-} catch {
+}
+catch {
     Write-Host "[FAIL] Python is NOT installed." -ForegroundColor Red
 }
 
@@ -79,7 +81,8 @@ try {
         -Verb RunAs
 
     Write-Host "`[OK] Python installation completed. Verifying installation..." -ForegroundColor Green
-} catch {
+}
+catch {
     Write-Host "[FAIL] Installer failed or was denied." -ForegroundColor Red
     exit 1
 }
@@ -95,13 +98,16 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
         $version = python --version 2>&1
         if ($version -match "^Python\s+\d+\.\d+") {
             Write-Host "[OK] Python installed: $version" -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "[FAIL] Installation may have failed. No version detected." -ForegroundColor Red
         }
-    } catch {
+    }
+    catch {
         Write-Host "[FAIL] Failed to verify Python after install." -ForegroundColor Red
     }
-} else {
+}
+else {
     Write-Host "[FAIL] Python command not found. Installation might have failed or PATH is not updated." -ForegroundColor Red
 }
 
@@ -118,7 +124,8 @@ $helloScript = Join-Path $PSScriptRoot "..\scripts\hello.py"
 & $pythonPath $helloScript
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] hello.py execution failed." -ForegroundColor Red
-} else {
+}
+else {
     Write-Host ""
     Write-Host -ForegroundColor Green "`[SUCCESS] Python has been successfully installed and verified!"
 }
@@ -127,7 +134,8 @@ if ($LASTEXITCODE -ne 0) {
 $version = & python --version 2>$null
 if ($version) {
     exit 0
-} else {
+}
+else {
     exit 1
 }
 

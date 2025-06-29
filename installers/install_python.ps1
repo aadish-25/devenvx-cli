@@ -91,7 +91,7 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
 }
 
 # executing the hello.py script to test one final time
-Write-Host "`n[INFO] Running test script: hello.py..."
+Write-Host "`[INFO] Running test script: hello.py"
 $pythonPath = "python"
 $helloScript = Join-Path $PSScriptRoot "..\scripts\hello.py"
 

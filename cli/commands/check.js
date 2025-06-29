@@ -125,4 +125,4 @@ export function handleCheck(language) {
   } else {
     console.log(chalk.yellowBright(`\n⚠️ Some required tools for ${language} are missing or broken.\n`));
   }
-}
+} 

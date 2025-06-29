@@ -1,40 +1,14 @@
-<# Steps - 
-    1. check if python is already installed, if yes then display message else install it
-    2. install python 
+<# Steps -
+    1. check if java is already installed, if yes then display message else install it
+    2. install java (jdk)
     3. run it with silent flags
-    4. verify with python --version
-    5. run the hello.py script
+    4. verify with java -version and javac -version
+    5. compile and run the hello.java script to confirm setup
 #>
 
-# function that shows the progress bar using '#' while installing
-function Show-DownloadProgress {
-    param (
-        [System.IO.Stream]$inputStream,
-        [long]$totalBytes,
-        [string]$outputPath
-    )
+# Import reusable download progress loader
+. "$PSScriptRoot\..\cli\utils\showLoader.ps1"
 
-    $fileStream = [System.IO.File]::Create($outputPath)
-    $buffer = New-Object byte[] 8192
-    $totalRead = 0
-
-    do {
-        $read = $inputStream.Read($buffer, 0, $buffer.Length)
-        if ($read -gt 0) {
-            $fileStream.Write($buffer, 0, $read)
-            $totalRead += $read
-            $percent = [math]::Round(($totalRead / $totalBytes) * 100)
-            $bar = "#" * ($percent / 2) + "-" * (50 - ($percent / 2))
-            Write-Host -NoNewline "`r[$bar] $percent%"
-        }
-    } while ($read -gt 0)
-
-    $fileStream.Close()
-    Write-Host ""
-    Write-Host ""
-    Write-Host "[OK] Python installer downloaded successfully"
-    Write-Host ""
-}
 
 # checking if python is already installed
 Write-Host "`n[INFO] Checking if Python is already installed..." 

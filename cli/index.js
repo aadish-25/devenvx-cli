@@ -4,10 +4,13 @@ import { Command } from "commander";
 import chalk from "chalk";
 import figlet from "figlet";
 
+import { ensureWindowsPlatform } from './utils/checkPlatform.js';
 import { handleInstall } from "./commands/install.js";
 import { handleCheck } from './commands/check.js';
 import { handleUninstall } from './commands/uninstall.js';
 import { handleList } from "./commands/list.js";
+
+ensureWindowsPlatform();
 
 const program = new Command();
 

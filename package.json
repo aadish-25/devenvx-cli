@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "os": ["win32"],
+  
   "bin": {
     "devenvx": "./cli/index.js"
   },

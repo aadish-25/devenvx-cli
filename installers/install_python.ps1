@@ -1,9 +1,9 @@
-<# Steps -
-    1. check if java is already installed, if yes then display message else install it
-    2. install java (jdk)
+<# Steps - More actions
+    1. check if python is already installed, if yes then display message else install it
+    2. install python 
     3. run it with silent flags
-    4. verify with java -version and javac -version
-    5. compile and run the hello.java script to confirm setup
+    4. verify with python --version
+    5. run the hello.py script
 #>
 
 # Import reusable download progress loader

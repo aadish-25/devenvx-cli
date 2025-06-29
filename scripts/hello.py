@@ -1,3 +1,3 @@
 # scripts/hello.py
 
-print("✅ Hello from Python!")
+print("Hello World from Python!")

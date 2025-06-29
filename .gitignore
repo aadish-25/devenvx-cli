@@ -36,3 +36,5 @@ build/
 
 # Optional test artifacts
 coverage/
+
+scripts/hello.class

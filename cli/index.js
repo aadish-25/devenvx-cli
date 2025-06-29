@@ -28,12 +28,12 @@ program
 
 program
     .command('check <language>')
-    .description("To check if the environment is set up for the selected languages")
+    .description("To check if the environment is set up for the selected language")
     .action(handleCheck);
 
 program
     .command('uninstall <language>')
-    .description("To uninstall the development environment for chosen languages")
+    .description("To uninstall the development environment for chosen language")
     .action(handleUninstall)
 
 program

@@ -32,6 +32,8 @@ foreach ($path in $registryPaths) {
 }
 #>
 
+# No need to clear PATH as uninstalling python takes care of it 
+
 Write-Host "`n[INFO] Attempting to remove Python from your system..." -ForegroundColor Cyan
 
 $registryPaths = @(
@@ -63,8 +65,10 @@ if ($pythonUninstallEntry) {
 
     Start-Process -FilePath "cmd.exe" -ArgumentList "/c", "$uninstallCmd /quiet" -WindowStyle Hidden -Wait
 
-    Write-Host "`n[SUCCESS] Python uninstallation completed. Python has been successfully removed from your system." -ForegroundColor Green
+    Write-Host "`n[SUCCESS] Python uninstallation completed." -ForegroundColor Green
 }
 else {
     Write-Host "`n[WARN] Python does not appear to be installed or was already removed." -ForegroundColor Yellow
+    exit 0 
 }
+

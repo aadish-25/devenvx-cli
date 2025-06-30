@@ -32,7 +32,6 @@ if ($javaUninstallEntry) {
 
     Write-Host "`n[INFO] Found uninstall command:" -ForegroundColor Yellow
 
-    # Fix unquoted GUID in MsiExec uninstall string
     if ($uninstallCmd -match "MsiExec\.exe\s+/X\{(.+?)\}") {
         $guid = $matches[1]
         $uninstallCmd = "MsiExec.exe /X `"{$guid}`""
@@ -40,6 +39,7 @@ if ($javaUninstallEntry) {
 
     Write-Host "`n[INFO] Uninstalling Java..." -ForegroundColor Cyan
 
+    # executing uninstall command silently via CMD and check uninstall exit code
     try {
         $process = Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $uninstallCmd -Wait -NoNewWindow -PassThru
         $exitCode = $process.ExitCode
@@ -55,8 +55,7 @@ if ($javaUninstallEntry) {
                 Write-Host "`n[FAIL] Java uninstallation failed with exit code $exitCode." -ForegroundColor Red
             }
         }
-
-        exit 0  # Prevent Node error logging
+        exit 0
     }
     catch {
         Write-Host "`n[FAIL] Java uninstallation encountered an error." -ForegroundColor Red

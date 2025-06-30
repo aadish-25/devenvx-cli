@@ -15,6 +15,7 @@ Write-Host "`n[INFO] Checking if Java is already installed..."
 $javaInstalled = $false
 $javacInstalled = $false
 
+# running the command : java -version
 try {
     $javaVersion = java -version 2>&1
     if ($javaVersion -match "version\s+`"\d+\.\d+") {
@@ -23,6 +24,7 @@ try {
 }
 catch {}
 
+# running the command : javac --version
 try {
     $javacVersion = javac --version 2>&1
     if ($javacVersion -match "javac\s+\d+\.\d+") {
@@ -31,6 +33,7 @@ try {
 }
 catch {}
 
+# if both installed then only we cna say Java is installed
 if ($javaInstalled -and $javacInstalled) {
     Write-Host "[SUCCESS] Java (JDK) is already installed." -ForegroundColor Green
     Write-Host ""
@@ -48,6 +51,7 @@ Write-Host "`n[INFO] Downloading Oracle Java JDK 21 installer..."
 $javaUrl = "https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe"
 $installerPath = "$env:TEMP\oracle-jdk-installer.exe"
 
+# suppresses native progress bars (e.g. Invoke-WebRequest); not needed here but used for safety measures
 $ProgressPreference = 'SilentlyContinue'
 Add-Type -AssemblyName System.Net.Http
 
@@ -76,19 +80,45 @@ catch {
     exit 1
 }
 
-# update current session PATH to detect new python
+# update current session PATH to detect new java
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 
-# added delay to handle slow registry/ENV propogation
+# added delay to handle slow registry/ENV propagation
 Start-Sleep -Seconds 2
 
+# setting JAVA_HOME if possible
+Write-Host "`n[INFO] Attempting to set JAVA_HOME..."
+$javaInstallRoot = "C:\Program Files\Java"
+$jdkDir = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+if ($jdkDir) {
+    $jdkPath = $jdkDir.FullName
+    Write-Host "[INFO] Detected JDK path: $jdkPath"
+
+    try {
+        [Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, "Machine")
+        Write-Host "[OK] JAVA_HOME set system-wide" -ForegroundColor Green
+    }
+    catch {
+        try {
+            [Environment]::SetEnvironmentVariable("JAVA_HOME", $jdkPath, "User")
+            Write-Host "[OK] JAVA_HOME set for current user" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "[WARN] Failed to set JAVA_HOME." -ForegroundColor Red
+        }
+    }
+}
+else {
+    Write-Host "[WARN] Could not detect JDK installation directory." -ForegroundColor Yellow
+}
 
 # checking if java is correctly installed by checking java -version and javac -version
 Write-Host "`n[INFO] Verifying Java installation..."
-
 $javaOK = $false
 $javacOK = $false
 
+# checking the command : java -version
 try {
     $versionRaw = & java -version 2>&1 | Out-String
     $lines = $versionRaw -split "`n"
@@ -101,6 +131,7 @@ try {
 }
 catch {}
 
+# checking the command : javac --version
 try {
     $javacVersion = javac -version 2>&1
     if ($javacVersion -match "javac\s+\d+\.\d+") {
@@ -113,7 +144,7 @@ catch {}
 if (-not $javaOK -or -not $javacOK) {
     Write-Host "[WARN] Java may not be fully available in this terminal yet. Try restarting your shell." -ForegroundColor Yellow
 }
-else{
+else {
     Write-Host "[OK] Java installed" -ForegroundColor Green
 }
 
@@ -132,7 +163,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# step1 : run
+# step2 : run
 Write-Host "[INFO] Step 2: Running compiled Java program..."
 Push-Location $javaDir
 & java hello

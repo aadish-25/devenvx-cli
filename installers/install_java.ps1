@@ -79,6 +79,10 @@ catch {
 # update current session PATH to detect new python
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 
+# added delay to handle slow registry/ENV propogation
+Start-Sleep -Seconds 2
+
+
 # checking if java is correctly installed by checking java -version and javac -version
 Write-Host "`n[INFO] Verifying Java installation..."
 

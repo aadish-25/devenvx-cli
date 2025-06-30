@@ -72,7 +72,6 @@ export function handleCheck(language) {
   else if (language === 'java') {
     allOk &&= checkCommand('java', 'Java Runtime (java)', language, '-version');
     allOk &&= checkCommand('javac', 'Java Compiler (javac)', language);
-
   }
 
   // CPP check (g++, gcc and gdc)

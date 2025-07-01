@@ -30,7 +30,7 @@ $pythonUninstallEntry = $null
 # Loop through each registry path
 foreach ($path in $registryPaths) {
 
-  # Get all entries (apps) from the current path
+  # Retrieve all installed program entries from the current registry path
   $items = Get-ItemProperty $path -ErrorAction SilentlyContinue | Where-Object {
 
     # Filter the entries to find the correct Python installer

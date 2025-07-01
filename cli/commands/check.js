@@ -1,21 +1,31 @@
+// Purpose of checkTool.js:
+// This script verifies whether the required tools (like compilers or interpreters) for a given programming language
+// are installed and working correctly by checking their versions.
+// Used in DevEnvx for the `devenvx check <language>` command.
+
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 
-// function that shows the 'devenvx' installtion command if langauge isn't present 
+// Function that shows the 'devenvx' installation command if langauge isn't present 
 const installHelp = (language) => {
   return chalk.yellow(
     `👉 You can try installing it using: ${chalk.cyan(`devenvx install ${language}`)}`
   );
 };
 
-// function that runs commands to check if the language is present or not
-// this is done by checking their versions using --version(or -version for some tools) 
+// Function that runs version check for the language
+// This is done by checking their versions using --version(or -version for some tools) 
 const checkCommand = (cmd, cmdName, language, versionFlag = '--version') => {
+
+  // Runs the specified command synchronously with the version flag (e.g., `g++ --version`).
+  // The `2>&1` ensures that both standard output and error streams are captured,
+  // since some tools output their version info to stderr instead of stdout.
   try {
     const output = execSync(`${cmd} ${versionFlag} 2>&1`, {
       encoding: 'utf8',
     });
 
+    // Extracts version from the output
     const versionLine = output.split('\n').find(line => line.trim())?.trim() || 'Unknown';
 
     console.log(
@@ -30,10 +40,12 @@ const checkCommand = (cmd, cmdName, language, versionFlag = '--version') => {
   }
 };
 
-// the main function to handle check
+// Main function called when user runs: devenvx check <language>
+// It checks the installation status of tools required for the given language.
 export function handleCheck(language) {
   console.log(chalk.bold(`\n🔍 Checking tools for language: ${chalk.blue(language)}\n`));
 
+  // allOk is a status tracker — a boolean (true or false) that keeps track of whether all required tools were successfully found for a given language.
   let allOk = true;
 
   // Python check (we check both python and python3)
@@ -112,13 +124,13 @@ export function handleCheck(language) {
     allOk &&= checkCommand('cargo', 'Rust Package Manager (cargo)', language);
   }
 
-  // fallback for unsupported languages
+  // Fallback for unsupported languages
   else {
     console.log(chalk.red(`❌ Unsupported language: ${language}\n`));
     return;
   }
 
-  // final check: if all required tools are available
+  // Final check: if all required tools are available
   if (allOk) {
     console.log(chalk.greenBright(`\n🎉 All required tools for ${language} are installed and working properly!\n`));
   } else {

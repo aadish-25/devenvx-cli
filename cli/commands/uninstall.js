@@ -48,13 +48,10 @@ export async function handleUninstall(language) {
 
 }
 
-// NOTE - No error message is logged for exit code 1, because it's already handled 
+// NOTE - No error message is logged for exit code 1, because it's already handled
 // within the respective uninstall PowerShell scripts.
 //
 // In the context of uninstallation, exit code 1 typically indicates:
 // - The language is not currently installed
 // - Required uninstall keys or files are missing
 // - The environment has already been removed
-
-addEventListeneras
-false

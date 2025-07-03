@@ -20,7 +20,7 @@
 
 **DevEnvx CLI** is a zero-install, cross-language setup tool available directly via `npx`.  
 It lets you configure full development environments (Python, Java, C++, and more) from the terminal — no downloads, no GUIs, no extra setup.  
-Everything happens via trusted PowerShell scripts under the hood, but you only run one command.
+Everything happens via trusted PowerShell scripts under the hood, but you only run one command:
 
 ```bash
 npx devenvx
@@ -32,12 +32,12 @@ That’s it. **No global installation. No browser. No configuration.**
 
 ## ✨ Why DevEnvx?
 
-- **Powered by npm** – Instantly accessible via the world’s most trusted package registry. No installs. No browser. Just run.
-- **Truly One-Line Setup** – From nothing to a fully configured environment in seconds  
-- **Zero Browser Required** – Everything happens in your terminal  
-- **Windows-Native Integration** – Purpose-built for Windows using PowerShell scripts  
-- **Clean, Fast, & Reliable** – Optimized installers with intelligent validation  
-- **Multiple Language Support** – Set up C++, Java, Python, and more with one interface  
+- **Powered by npm** — Instantly accessible via the world’s most trusted package registry — no installs, no browser, just run.
+- **Truly One-Line Setup** — From nothing to a fully configured environment in seconds  
+- **Zero Browser Required** — Everything happens in your terminal  
+- **Windows-Native Integration** — Purpose-built for Windows using PowerShell scripts  
+- **Clean, Fast, & Reliable** — Optimized installers with intelligent validation  
+- **Multiple Language Support** — Set up C++, Java, Python, and more with one interface  
 
 ---
 
@@ -55,23 +55,26 @@ npx devenvx
 npx devenvx install python
 ```
 
-### 3. Start coding immediately:
+### 3. Restart your terminal to activate the environment
+
+After installation, close and reopen your terminal to ensure all changes (like PATH updates) take effect.
+
+Then you're ready to start coding:
 
 ```bash
-# Python is installed and ready to use
-python -c "print('Hello from your new dev environment!')"
+python --version
 ```
 
 ---
 
 ## 🛠️ Features That Set DevEnvx Apart
 
-- **Smart Installation** – Automatically detects existing installations and skips unnecessary downloads  
-- **Environment Validation** – Verifies your setup with real compilation tests  
-- **PATH Management** – Automatically configures system PATH variables  
-- **Clean Uninstallation** – Remove environments without leaving stray files or registry entries  
-- **Multiple Language Support** – Install multiple languages with one command
-- **Published on npm** – Delivered via the world’s most trusted package registry—no shady downloads, no manual scripts
+- **Smart Installation** — Automatically detects existing installations and skips unnecessary downloads  
+- **Environment Validation** — Verifies your setup with real compilation tests  
+- **PATH Management** — Automatically configures system PATH variables  
+- **Clean Uninstallation** — Remove environments without leaving stray files or registry entries  
+- **Multiple Language Support** — Install multiple languages with one command  
+- **Published on npm** — Delivered via the world’s most trusted package registry — no shady downloads, no manual scripts
 
 ```bash
 # Install multiple environments at once
@@ -83,17 +86,20 @@ npx devenvx install java cpp python
 ## 📋 Command Reference
 
 ### List Supported Languages
+
 ```bash
 npx devenvx list
 ```
 
 ### Install Language Environment(s)
+
 ```bash
 npx devenvx install python              # Install a single language
 npx devenvx install java cpp            # Install multiple languages at once
 ```
 
 ### Verify Language Environment
+
 ```bash
 npx devenvx check cpp
 ```
@@ -113,6 +119,7 @@ npx devenvx check cpp
 </details>
 
 ### Uninstall Language Environment
+
 ```bash
 npx devenvx uninstall python
 ```
@@ -150,20 +157,20 @@ DevEnvx uses Node.js and PowerShell to create a seamless installation experience
 
 ## 🏆 What Makes DevEnvx One-of-a-Kind
 
-- **No Browser Required** – Unlike other tools that open your browser or require manual downloads, DevEnvx handles everything within the terminal  
-- **Zero Manual Intervention** – No clicking through installers or manually configuring environment variables  
-- **First-Class Windows Support** – Built specifically for Windows, not a Linux tool poorly adapted to Windows  
-- **Intelligent Recovery** – Automatically detects and fixes broken or partial installations  
-- **Actual Compilation Testing** – Verifies installations by compiling and running real code  
+- **No Browser Required** — Unlike other tools that open your browser or require manual downloads, DevEnvx handles everything within the terminal  
+- **Zero Manual Intervention** — No clicking through installers or manually configuring environment variables  
+- **First-Class Windows Support** — Built specifically for Windows, not a Linux tool poorly adapted to Windows  
+- **Intelligent Recovery** — Automatically detects and fixes broken or partial installations  
+- **Actual Compilation Testing** — Verifies installations by compiling and running real code  
 
 ---
 
 ## 🔍 Real-World Use Cases
 
-- **Developer Onboarding** — Get new team members coding in minutes with a complete environment setup.
-- **Multi-Language Learning** — Quickly set up and switch between Python, Java, C++, and more for study or experimentation.
-- **Classroom & Training** — Provision dozens of machines with consistent environments — no manual setup needed.
-- **CI/CD Integration** — Automate reliable, reproducible dev setups in your continuous integration workflows.
+- **Developer Onboarding** — Get new team members coding in minutes with a complete environment setup.  
+- **Multi-Language Learning** — Quickly set up and switch between Python, Java, C++, and more for study or experimentation.  
+- **Classroom & Training** — Provision dozens of machines with consistent environments — no manual setup needed.  
+- **CI/CD Integration** — Automate reliable, reproducible dev setups in your continuous integration workflows.  
 
 ---
 
@@ -190,7 +197,7 @@ See the [contributing guidelines](CONTRIBUTING.md) for detailed instructions.
 
 ## 📜 License
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -213,6 +220,6 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 
 <p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>. No downloads. Just run it.</em></p>
 
-<p align="center">
-  <strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong>
-</p>
+<p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>
+
+<p align="center"><strong>Run anywhere, anytime. Powered by npm.</strong></p>

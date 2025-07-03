@@ -70,7 +70,8 @@ python -c "print('Hello from your new dev environment!')"
 - **Environment Validation** – Verifies your setup with real compilation tests  
 - **PATH Management** – Automatically configures system PATH variables  
 - **Clean Uninstallation** – Remove environments without leaving stray files or registry entries  
-- **Multiple Language Support** – Install multiple languages with one command  
+- **Multiple Language Support** – Install multiple languages with one command
+- **Published on npm** – Delivered via the world’s most trusted package registry—no shady downloads, no manual scripts
 
 ```bash
 # Install multiple environments at once

@@ -32,7 +32,7 @@ That’s it. **No global installation. No browser. No configuration.**
 
 ## ✨ Why DevEnvx?
 
-- **npm-Native Execution** – No need to install anything globally. Just run it instantly via `npx devenvx`.
+- **Powered by npm** – Instantly accessible via the world’s most trusted package registry. No installs. No browser. Just run.
 - **Truly One-Line Setup** – From nothing to a fully configured environment in seconds  
 - **Zero Browser Required** – Everything happens in your terminal  
 - **Windows-Native Integration** – Purpose-built for Windows using PowerShell scripts  

@@ -71,25 +71,16 @@ $installerPath = "$env:TEMP\python-installer.exe"
 $ProgressPreference = 'SilentlyContinue'
 Add-Type -AssemblyName System.Net.Http
 
-# To handle network download failures
 try {
-    # Client is used to send a http request (GET, POST, etc)
     $client = New-Object System.Net.Http.HttpClient
     $response = $client.GetAsync($pythonUrl, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
-
-    # If success code not received, run this block
-    if (-not $response.IsSuccessStatusCode) {
-        Write-Host "`n[FAIL] Failed to download Python installer. HTTP Status: $($response.StatusCode)" -ForegroundColor Red
-        exit 1
-    }
-
     $totalBytes = $response.Content.Headers.ContentLength
     $stream = $response.Content.ReadAsStreamAsync().Result
 
     Show-DownloadProgress -inputStream $stream -totalBytes $totalBytes -outputPath $installerPath
 }
 catch {
-    Write-Host "`n[FAIL] Network error while downloading Python. Please check your connection and try again." -ForegroundColor Red
+    Write-Host "`n[FAIL] Unable to download the Python installer. Please try again." -ForegroundColor Red
     exit 1
 }
 
@@ -162,8 +153,10 @@ if ($LASTEXITCODE -ne 0) {
 else {
     Write-Host ""
     Write-Host -ForegroundColor Green "`[SUCCESS] Python has been successfully installed and verified!"
+    
+    # Clean up by removing the downloaded installer file
+    Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
     exit 0  # Exit with success
 }
 
-# Clean up by removing the downloaded installer file
-Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
+

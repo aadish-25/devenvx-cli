@@ -28,7 +28,7 @@ export async function handleInstall(languages) {
       await fs.promises.access(scriptPath);
     } catch {
       console.log(chalk.yellow(`\n[WARN] '${lang}' is not supported.`));
-      console.log(chalk.gray(`Use 'npx devenvx list' to view available languages.`));
+      console.log(chalk.gray(`Use 'npx devenvx list' to view available languages.\n`));
       continue;
     }
 

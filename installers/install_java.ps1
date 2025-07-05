@@ -1,25 +1,25 @@
-<# Steps -
-    1. check if java is already installed, if yes then display message else install it
-    2. install java (jdk)
-    3. run it with silent flags
-    4. verify with java -version and javac -version
-    5. compile and run the hello.java script to confirm setup
-#>
+# Java Install Script for DevEnvx
 
-# Import reusable download progress loader
+# This script is part of DevEnvx. It installs Java JDK 21 automatically if not already installed.
+# It checks for existing installations, handles broken JDK folders, downloads the official installer,
+# installs Java silently, sets JAVA_HOME, verifies setup, and compiles/runs a test program.
+
+# ---------------------------------------------------------------------
+
+# Import reusable progress bar function for showing installer download progress
 . "$PSScriptRoot\..\cli\utils\showLoader.ps1"
 
-# Refresh PATH from system/user before checking for tools
+# Refresh PATH environment variable from both user and machine scopes
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" +
 [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 
-# checking if java is already installed
+# Check if Java is already installed by validating both 'java' and 'javac' commands
 Write-Host "`n[INFO] Checking if Java is already installed..." 
 
 $javaInstalled = $false
 $javacInstalled = $false
 
-# running the command : java -version
+# Run 'java -version'
 try {
     $javaVersion = java -version 2>&1
     if ($javaVersion -match "version\s+`"\d+\.\d+") {
@@ -28,7 +28,7 @@ try {
 }
 catch {}
 
-# running the command : javac --version
+# Run 'javac --version'
 try {
     $javacVersion = javac --version 2>&1
     if ($javacVersion -match "javac\s+\d+\.\d+") {
@@ -37,7 +37,7 @@ try {
 }
 catch {}
 
-# if both installed then only we cna say Java is installed
+# If both tools are available, Java is already set up
 if ($javaInstalled -and $javacInstalled) {
     Write-Host "[SUCCESS] Java (JDK) is already installed." -ForegroundColor Green
     Write-Host ""
@@ -47,11 +47,13 @@ else {
     Write-Host "[FAIL] Java JDK is not fully installed." -ForegroundColor Red
 }
 
-# Step 2: Detect broken installation and clean it
+# Detects and removes broken Java installations if JDK folder exists but key binaries are missing
 $javaInstallRoot = "C:\Program Files\Java"
 $foundBroken = $false
 
 if (Test-Path $javaInstallRoot) {
+    # This line finds all installed JDK folders under C:\Program Files\Java 
+    # and filters only those whose names start with jdk
     $jdkDirs = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" }
 
     foreach ($dir in $jdkDirs) {
@@ -79,7 +81,7 @@ if (Test-Path $javaInstallRoot) {
     }
 }
 
-# Step 3: Download Oracle JDK
+# Download Java JDK 21 installer from Oracle's official website
 Write-Host "`n[INFO] Downloading Oracle Java JDK 21 installer..."
 [System.Console]::Out.Flush()
 
@@ -90,6 +92,7 @@ $ProgressPreference = 'SilentlyContinue'
 Add-Type -AssemblyName System.Net.Http
 
 # To handle network download failures
+# Use .NET HttpClient to stream download with error checking
 try {
     $client = New-Object System.Net.Http.HttpClient
     $response = $client.GetAsync($javaUrl, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
@@ -109,9 +112,8 @@ catch {
     exit 1
 }
 
-
-# Step 4: Install Java silently
-Write-Host "[INFO] Installing Oracle JDK 21 silently..."
+# Install Java silently 
+Write-Host "`n[INFO] Installing Oracle JDK 21 silently..."
 Write-Host "[INFO] This will install system-wide and may prompt for admin rights." -ForegroundColor Cyan
 
 try {
@@ -124,11 +126,11 @@ try {
     Write-Host "`n[OK] Java installation completed. Verifying..." -ForegroundColor Green
 }
 catch {
-    Write-Host "[FAIL] Oracle JDK installer failed or was denied." -ForegroundColor Red
+    Write-Host "`n[FAIL] Oracle JDK installer failed or was denied." -ForegroundColor Red
     exit 1
 }
 
-# Step 5: Update session PATH and set JAVA_HOME
+# Refresh the session PATH and set JAVA_HOME environment variable
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 Start-Sleep -Seconds 2
 
@@ -157,7 +159,7 @@ else {
     Write-Host "[WARN] Could not detect JDK installation directory." -ForegroundColor Yellow
 }
 
-# Step 6: Verify installation
+# Run java and javac commands to verify installation
 Write-Host "`n[INFO] Verifying Java installation..."
 $javaOK = $false
 $javacOK = $false
@@ -182,6 +184,7 @@ try {
 }
 catch {}
 
+# If still not detected, advise user to restart the terminal
 if (-not $javaOK -or -not $javacOK) {
     Write-Host "[WARN] Java may not be fully available in this terminal yet. Try restarting your shell." -ForegroundColor Yellow
 }
@@ -189,7 +192,7 @@ else {
     Write-Host "[OK] Java installed" -ForegroundColor Green
 }
 
-# Step 7: Run hello.java
+# Compile and run a hello.java file to confirm Java works end-to-end
 Write-Host "`n[INFO] Running final Java verification with hello.java"
 $javaFile = Join-Path $PSScriptRoot "..\scripts\hello.java"
 $javaDir = Split-Path $javaFile
@@ -213,7 +216,7 @@ else {
     Write-Host "[FAIL] hello.java execution failed." -ForegroundColor Red
 }
 
-# Step 8: Final check for CLI
+# Final re-check to confirm java/javac are available for CLI use
 $javaOK = $false
 $javacOK = $false
 
@@ -227,4 +230,5 @@ else {
     exit 1
 }
 
+# Clean up by removing the downloaded installer file
 Remove-Item $installerPath -Force -ErrorAction SilentlyContinue

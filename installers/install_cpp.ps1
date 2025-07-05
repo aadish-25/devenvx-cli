@@ -1,26 +1,26 @@
-<# Steps -
-    1. check if C++ tools (g++, gcc, gdb) are already installed, if yes then display message else install TDM-GCC
-    2. install TDM-GCC (g++, gcc, gdb)
-    3. run it with silent flags
-    4. verify with g++ --version and gdb --version
-    5. compile and run the hello.cpp script to confirm setup
-#>
+# C++ Install Script for DevEnvx
+#
+# This script is part of DevEnvx. It installs the C++ toolchain (g++, gcc, gdb) using MSYS2 if not already installed.
+# It checks for existing installations, detects broken toolchains, downloads MSYS2, installs the MinGW-w64 GCC toolchain,
+# adds it to the PATH, verifies setup, and compiles/runs a test program using hello.cpp.
 
-# Import reusable download progress loader
+# ---------------------------------------------------------------------
+
+# Import reusable progress bar function for showing installer download progress
 . "$PSScriptRoot\..\cli\utils\showLoader.ps1"
 
-# Refresh PATH from system/user before checking for tools
+# Refresh PATH environment variable from both user and machine scopes
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + `
     [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 
-# checking if g++, gcc, gdb are already installed
+# Check if core C++ tools (g++, gcc, gdb) are already available in the system
 Write-Host "`n[INFO] Checking if C++ tools are already installed..."
 
 $gppInstalled = $false
 $gccInstalled = $false
 $gdbInstalled = $false
 
-# check for g++
+# Try running 'g++ --version' to confirm if g++ is present
 try {
     & g++ --version > $null 2>&1
     if ($LASTEXITCODE -eq 0) {
@@ -29,7 +29,7 @@ try {
 }
 catch {}
 
-# check for gcc
+# Try running 'gcc --version' to confirm if gcc is present
 try {
     & gcc --version > $null 2>&1
     if ($LASTEXITCODE -eq 0) {
@@ -38,7 +38,7 @@ try {
 }
 catch {}
 
-# check for gdb
+# Try running 'gdb --version' to confirm if gdb is present
 try {
     & gdb --version > $null 2>&1
     if ($LASTEXITCODE -eq 0) {
@@ -47,7 +47,7 @@ try {
 }
 catch {}
 
-# if all 3 tools are installed, skip setup
+# If all required tools are present, no need to install — exit gracefully
 if ($gppInstalled -and $gccInstalled -and $gdbInstalled) {
     Write-Host "[SUCCESS] C++ toolchain (g++, gcc, gdb) is already installed." -ForegroundColor Green
     Write-Host ""
@@ -66,7 +66,7 @@ if (Test-Path $bashPath) {
     $skipExtraction = $true
 }
 
-# Check for corrupted MSYS2 install (MSYS2 exists, but toolchain missing)
+# Detect corrupted MSYS2 installation — folder exists, but toolchain binaries are missing
 $msysBinPath = "C:\msys64\mingw64\bin"
 $expectedBinaries = @("g++.exe", "gcc.exe", "gdb.exe")
 $brokenState = $false
@@ -78,6 +78,7 @@ foreach ($binary in $expectedBinaries) {
     }
 }
 
+# If broken, attempt cleanup before reinstall
 if ($skipExtraction -and $brokenState) {
     Write-Host "`n[WARN] MSYS2 exists, but essential toolchain files are missing." -ForegroundColor Yellow
     Write-Host "`n[INFO] Attempting automatic recovery by deleting and reinstalling MSYS2..." -ForegroundColor Cyan
@@ -93,9 +94,8 @@ if ($skipExtraction -and $brokenState) {
     }
 }
 
-
+# Download and extract MSYS2 base archive (used for MinGW-w64 toolchain setup)
 if (-not $skipExtraction) {
-    # Step 2 - Downloading and extracting MSYS2 archive
     Write-Host "`n[INFO] Downloading MSYS2 base archive (for MinGW-w64 GCC toolchain, no GUI installer)..." -ForegroundColor Cyan
     [System.Console]::Out.Flush()
 
@@ -125,13 +125,12 @@ if (-not $skipExtraction) {
         exit 1
     }
 
-
-    # Extract archive to C:\ so msys64 lands correctly
-    Write-Host "`[INFO] Extracting MSYS2 archive to C:\..."
+    # Extract the MSYS2 archive to C:\ so the folder structure (C:\msys64) is correct
+    # This extracts MSYS2 to C:\ and gives us bash.exe, which lets us install g++, gcc, and gdb using pacman.
+    Write-Host "`[INFO] Extracting MSYS2 archive to C:\"
     if (Test-Path $installDir) {
         Remove-Item -Path $installDir -Recurse -Force -ErrorAction SilentlyContinue
     }
-
     try {
         tar -xf $archivePath -C "C:\"
     }
@@ -140,7 +139,7 @@ if (-not $skipExtraction) {
         exit 1
     }
 
-    # Clean up archive
+    # Clean up the MSYS2 archive after extraction
     try {
         Remove-Item -Path $archivePath -Force -ErrorAction SilentlyContinue
         Write-Host "`[INFO] Cleaned up temporary archive file." -ForegroundColor DarkGray
@@ -149,28 +148,30 @@ if (-not $skipExtraction) {
         Write-Host "[WARN] Failed to delete archive file (may be locked). Skipping..." -ForegroundColor Yellow
     }
 
-    # Verify MSYS2 presence
+    # Verifying MSYS2 presence i.e if the extraction was successful or not
     if (-not (Test-Path $bashPath)) {
         Write-Host "`n[FAIL] MSYS2 bash.exe not found - extraction failed or archive is corrupted." -ForegroundColor Red
         exit 1
     }
-
     Write-Host "`n[OK] MSYS2 base extracted successfully." -ForegroundColor Green
 }
 
-# Step 3 — Install GCC toolchain via pacman
+# Use MSYS2's package manager (pacman) to install GCC, G++, and GDB
 Write-Host "`n[INFO] Proceeding to initialize and install GCC toolchain..." -ForegroundColor Cyan
 [System.Console]::Out.Flush()
 
 $bashPath = "C:\msys64\usr\bin\bash.exe"
 
-# Define bash script to update pacman and install toolchain
+# Define bash script to update pacman and install toolchain# We write the pacman commands (to update & install GCC/GDB) inside the $bootstrapScript variable.
+# Then we save those commands into a temporary .sh file.
+# This .sh file is later executed inside MSYS2 Bash to perform the actual installation.
+
+# A shell script refers to a .sh file, which contains a list of commands meant to be executed 
+# by a Unix-like shell like bash, sh, zsh, etc.
 $bootstrapScript = @'
 pacman --noconfirm -Sy
 pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gdb
 '@
-
-# Save bash commands to a temporary shell script
 $scriptPath = "$env:TEMP\msys2-bootstrap.sh"
 $logPath = "$env:TEMP\msys2-bootstrap.log"
 
@@ -185,7 +186,7 @@ catch {
     exit 1
 }
 
-# Clean up temporary script
+# Clean up the temporary shell script (.sh file) after use to avoid leaving clutter in the temp folder.
 try {
     Remove-Item $scriptPath -Force -ErrorAction SilentlyContinue
 }
@@ -193,7 +194,7 @@ catch {
     Write-Host "[WARN] Failed to delete temp bash script. Skipping cleanup..." -ForegroundColor Yellow
 }
 
-# Final validation
+# Confirm all toolchain binaries were successfully installed
 $gppPath = "C:\msys64\mingw64\bin\g++.exe"
 $gccPath = "C:\msys64\mingw64\bin\gcc.exe"
 $gdbPath = "C:\msys64\mingw64\bin\gdb.exe"
@@ -207,7 +208,7 @@ else {
     exit 1
 }
 
-# Step 6 — Add GCC toolchain to user's PATH permanently
+# Add MinGW-w64 binary path to user's PATH (persistent and current session)
 $mingwBinPath = "C:\msys64\mingw64\bin"
 $currentUserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 
@@ -224,7 +225,7 @@ if ($currentUserPath -notlike "*$mingwBinPath*") {
         Write-Host "[HINT] Manually add '$mingwBinPath' to your system PATH." -ForegroundColor Yellow
     }
 
-    # Update current session PATH (note: IDEs like VS Code may not reflect this immediately)
+    # Update current session PATH as well
     try {
         $env:Path = "$mingwBinPath;$env:Path"
         Write-Host "[OK] PATH updated for current terminal session." -ForegroundColor Green
@@ -237,11 +238,11 @@ else {
     Write-Host "`n[INFO] GCC toolchain is already in your PATH." -ForegroundColor DarkGray
 }
 
-# Always display restart advisory
+# Recommend restarting terminal to apply PATH changes immediatel
 Write-Host "`n[NOTE] If you still face issues using g++, gcc, or gdb," -ForegroundColor Cyan
 Write-Host "[NOTE] please restart your terminal or VS Code to ensure PATH changes are applied." -ForegroundColor Cyan
 
-# Step 7 — Verifying C++ toolchain setup with hello.cpp
+# Compile and run hello.cpp to verify that the C++ toolchain works end-to-end
 Write-Host "`n[INFO] Verifying C++ setup with hello.cpp test script..."
 
 $helloCpp = Join-Path $PSScriptRoot "..\scripts\hello.cpp"
@@ -291,4 +292,4 @@ catch {
     exit 1
 }
 
-# Remove insaller line needed
+# No further cleanup needed — installer was archive-based and has been handled

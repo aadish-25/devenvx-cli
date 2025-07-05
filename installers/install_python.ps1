@@ -165,5 +165,5 @@ else {
     exit 0  # Exit with success
 }
 
-# Delete installer to save space
+# Clean up by removing the downloaded installer file
 Remove-Item $installerPath -Force -ErrorAction SilentlyContinue

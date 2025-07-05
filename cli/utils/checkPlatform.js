@@ -10,7 +10,7 @@ export function ensureWindowsPlatform() {
   const platform = os.platform();
   
   // Display an error and exit if the platform is not supported (i.e., not Windows)
-  if (platform === 'win32') {
+  if (platform !== 'win32') {
     console.log(chalk.red('\n[FAIL] DevEnvx currently supports only Windows systems.'));
     console.log(chalk.yellowBright('[INFO] macOS and Linux support is planned for future updates.\n'));
 

@@ -55,11 +55,9 @@ npx devenvx
 npx devenvx install python
 ```
 
-### 3. Restart your terminal to activate the environment
+### 3. Start coding instantly
 
-After installation, close and reopen your terminal to ensure all changes (like PATH updates) take effect.
-
-Then you're ready to start coding:
+Your environment is ready to use right away — no terminal restart needed.
 
 ```bash
 python --version

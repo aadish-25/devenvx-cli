@@ -4,6 +4,7 @@
 // It uses the runScript utility to execute platform-specific installation scripts.
 
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
 import { runScript } from '../utils/runScript.js';
@@ -17,24 +18,26 @@ const __dirname = path.dirname(__filename);
 // Main function that handles the installation process
 export async function handleInstall(languages) {
   for (const lang of languages) {
-    const displayName = lang === "cpp" ? "CPP" : lang.charAt(0).toUpperCase() + lang.slice(1);
-    console.log(chalk.cyan(`\n[INFO] Installing ${displayName}...`));
-
-    // This means from the current directory, go 2 steps behind and then into the installers
-    // Just writing the installers path without .join(dirname) would mislead the script
-    // to go 2 steps behind from wherever the terminal is running
-    // Doing .join() tells the program to always go 2 steps behind wrt the directory and find installers
     const scriptPath = path.join(
       __dirname,
       `../../installers/install_${lang}.ps1`
     );
 
-    // runScript() - executes the script whose path is defined by scriptPath
+    // Check if the install script actually exists for this language
+    try {
+      await fs.promises.access(scriptPath);
+    } catch {
+      console.log(chalk.yellow(`\n[WARN] '${lang}' is not supported.`));
+      console.log(chalk.gray(`Use 'npx devenvx list' to view available languages.`));
+      continue;
+    }
+
+    const displayName = lang === "cpp" ? "CPP" : lang.charAt(0).toUpperCase() + lang.slice(1);
+    console.log(chalk.cyan(`\n[INFO] Installing ${displayName}...`));
+
     try {
       await runScript(scriptPath, displayName);
     } catch (err) {
-      // PowerShell install scripts return exit code 1 for expected failures (like already installed),
-      // so we only print this if something truly crashed.
       if (err.code !== 1) {
         console.error(chalk.red(`\n[FAIL] Unexpected error installing ${displayName}`));
       }

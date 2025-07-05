@@ -7,7 +7,7 @@
 
 # ---------------------------------------------------------------------
 
-Write-Host "`n[INFO] Attempting to remove Java from your system..." -ForegroundColor Cyan
+Write-Host "[INFO] Attempting to remove Java from your system..." -ForegroundColor Cyan
 
 # Define all registry paths that may contain uninstaller entries
 $registryPaths = @(
@@ -47,7 +47,7 @@ foreach ($path in $registryPaths) {
 if ($javaUninstallEntry) {
     $uninstallCmd = $javaUninstallEntry.UninstallString
 
-    Write-Host "`n[INFO] Found uninstall command:" -ForegroundColor Yellow
+    Write-Host "`n[OK] Found uninstall command" -ForegroundColor Green
 
     # Reformat the uninstall command if needed
     if ($uninstallCmd -match "MsiExec\.exe\s+/X\{(.+?)\}") {

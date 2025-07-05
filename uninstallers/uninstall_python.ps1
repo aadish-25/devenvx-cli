@@ -8,7 +8,7 @@
 
 # No need to clear PATH as uninstalling python takes care of it
 
-Write-Host "`n[INFO] Attempting to remove Python from your system..." -ForegroundColor Cyan
+Write-Host "`[INFO] Attempting to remove Python from your system..." -ForegroundColor Cyan
 
 # Define all registry paths that may contain uninstaller entries
 $registryPaths = @(

@@ -3,7 +3,7 @@
 
 # ---------------------------------------------------------------------
 
-Write-Host "`n[INFO] Attempting to uninstall C++ toolchain..." -ForegroundColor Cyan
+Write-Host "`[INFO] Attempting to uninstall C++ toolchain..." -ForegroundColor Cyan
 
 # Define known C++ toolchains and their install/bin paths
 $cppTools = @(

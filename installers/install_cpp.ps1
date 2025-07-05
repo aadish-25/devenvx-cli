@@ -238,7 +238,7 @@ else {
     Write-Host "`n[INFO] GCC toolchain is already in your PATH." -ForegroundColor DarkGray
 }
 
-# Recommend restarting terminal to apply PATH changes immediatel
+# Recommend restarting terminal to apply PATH changes immediately
 Write-Host "`n[NOTE] If you still face issues using g++, gcc, or gdb," -ForegroundColor Cyan
 Write-Host "[NOTE] please restart your terminal or VS Code to ensure PATH changes are applied." -ForegroundColor Cyan
 

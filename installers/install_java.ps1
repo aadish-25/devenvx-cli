@@ -47,38 +47,43 @@ else {
     Write-Host "[FAIL] Java JDK is not fully installed." -ForegroundColor Red
 }
 
-# Detects and removes broken Java installations if JDK folder exists but key binaries are missing
+# Detect and remove broken Java installations if JDK folder exists but key binaries are missing
 $javaInstallRoot = "C:\Program Files\Java"
 $foundBroken = $false
+$jdkDirs = @()
 
-if (Test-Path $javaInstallRoot) {
-    # This line finds all installed JDK folders under C:\Program Files\Java 
-    # and filters only those whose names start with jdk
-    $jdkDirs = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" }
+try {
+    if (Test-Path $javaInstallRoot) {
+        $jdkDirs = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" }
+    }
+    else {
+        throw "Java installation directory not found."
+    }
+}
+catch {}
 
-    foreach ($dir in $jdkDirs) {
-        $binPath = Join-Path $dir.FullName "bin"
-        $javaExe = Join-Path $binPath "java.exe"
-        $javacExe = Join-Path $binPath "javac.exe"
+foreach ($dir in $jdkDirs) {
+    $binPath = Join-Path $dir.FullName "bin"
+    $javaExe = Join-Path $binPath "java.exe"
+    $javacExe = Join-Path $binPath "javac.exe"
 
-        if (-not (Test-Path $javaExe) -or -not (Test-Path $javacExe)) {
-            Write-Host "`n[WARN] JDK folder '$($dir.Name)' exists but required binaries are missing." -ForegroundColor Yellow
-            Write-Host "[INFO] Attempting to delete broken JDK installation: $($dir.FullName)" -ForegroundColor Cyan
-            try {
-                Remove-Item -Path $dir.FullName -Recurse -Force -ErrorAction Stop
-                Write-Host "[OK] Broken JDK installation removed." -ForegroundColor Green
-                $foundBroken = $true
-            }
-            catch {
-                Write-Host "[FAIL] Could not delete $($dir.FullName). Please delete manually." -ForegroundColor Red
-                exit 1
-            }
+    if (-not (Test-Path $javaExe) -or -not (Test-Path $javacExe)) {
+        Write-Host "`n[WARN] JDK folder '$($dir.Name)' exists but required binaries are missing." -ForegroundColor Yellow
+        Write-Host "[INFO] Attempting to delete broken JDK installation: $($dir.FullName)" -ForegroundColor Cyan
+        try {
+            Remove-Item -Path $dir.FullName -Recurse -Force -ErrorAction Stop
+            Write-Host "[OK] Broken JDK installation removed." -ForegroundColor Green
+            $foundBroken = $true
+        }
+        catch {
+            Write-Host "[FAIL] Could not delete $($dir.FullName). Please delete manually." -ForegroundColor Red
+            exit 1
         }
     }
+}
 
-    if ($foundBroken) {
-        Start-Sleep -Seconds 1
-    }
+if ($foundBroken) {
+    Start-Sleep -Seconds 1
 }
 
 # Download Java JDK 21 installer from Oracle's official website
@@ -113,13 +118,13 @@ catch {
 }
 
 # Install Java silently 
-Write-Host "`n[INFO] Installing Oracle JDK 21 silently..."
+Write-Host "[INFO] Installing Oracle JDK 21 silently..."
 Write-Host "[INFO] This will install system-wide and may prompt for admin rights." -ForegroundColor Cyan
 
 try {
     Start-Process `
         -FilePath $installerPath `
-        -ArgumentList "/s" `
+        -ArgumentList "/quiet" `
         -Wait `
         -Verb RunAs
 
@@ -135,7 +140,22 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" +
 Start-Sleep -Seconds 2
 
 Write-Host "`n[INFO] Attempting to set JAVA_HOME..."
-$jdkDir = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$jdkDir = $null
+
+try {
+    if (Test-Path $javaInstallRoot) {
+        $jdkDir = Get-ChildItem $javaInstallRoot -Directory |
+                  Where-Object { $_.Name -like "jdk*" } |
+                  Sort-Object LastWriteTime -Descending |
+                  Select-Object -First 1
+    }
+    else {
+        throw "Java install directory not found."
+    }
+}
+catch {
+    Write-Host "[WARN] Failed to detect Java installation directory. Skipping JAVA_HOME setup." -ForegroundColor Yellow
+}
 
 if ($jdkDir) {
     $jdkPath = $jdkDir.FullName
@@ -198,9 +218,14 @@ $javaFile = Join-Path $PSScriptRoot "..\scripts\hello.java"
 $javaDir = Split-Path $javaFile
 
 Write-Host "[INFO] Step 1: Compiling hello.java"
-& javac $javaFile
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "[FAIL] Compilation failed." -ForegroundColor Red
+try {
+    & javac $javaFile
+    if ($LASTEXITCODE -ne 0) {
+        throw "javac failed"
+    }
+}
+catch {
+    Write-Host "[FAIL] Compilation of hello.java failed. Java may not be available yet." -ForegroundColor Red
     exit 1
 }
 
@@ -231,4 +256,6 @@ else {
 }
 
 # Clean up by removing the downloaded installer file
-Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
+if (Test-Path $installerPath) {
+    Remove-Item $installerPath -Force -ErrorAction SilentlyContinue
+}

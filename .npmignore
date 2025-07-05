@@ -1,0 +1,64 @@
+# Development and CI files
+.git/
+.github/
+.vscode/
+.idea/
+
+# Test and docs
+coverage/
+docs/
+test/
+tests/
+*.test.js
+*.spec.js
+jest.config.js
+mocha.opts
+
+# Build tools
+.eslintrc
+.eslintignore
+.prettierrc
+.prettierrc.js
+.lintstagedrc
+.editorconfig
+babel.config.js
+tsconfig.json
+webpack.config.js
+
+# Build outputs
+dist/
+build/
+tmp/
+temp/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+
+# Other unnecessary files
+.travis.yml
+.gitlab-ci.yml
+appveyor.yml
+circle.yml
+*.tgz
+*.tar.gz
+CHANGELOG.md
+CONTRIBUTING.md
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Don't ignore these files
+!cli/
+!installers/
+!uninstallers/
+!scripts/

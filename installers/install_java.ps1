@@ -9,6 +9,10 @@
 # Import reusable download progress loader
 . "$PSScriptRoot\..\cli\utils\showLoader.ps1"
 
+# Refresh PATH from system/user before checking for tools
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" +
+[System.Environment]::GetEnvironmentVariable("Path", "Machine")
+
 # checking if java is already installed
 Write-Host "`n[INFO] Checking if Java is already installed..." 
 
@@ -43,27 +47,71 @@ else {
     Write-Host "[FAIL] Java JDK is not fully installed." -ForegroundColor Red
 }
 
-# downloads the Oracle JDK installer (.exe)
+# Step 2: Detect broken installation and clean it
+$javaInstallRoot = "C:\Program Files\Java"
+$foundBroken = $false
+
+if (Test-Path $javaInstallRoot) {
+    $jdkDirs = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" }
+
+    foreach ($dir in $jdkDirs) {
+        $binPath = Join-Path $dir.FullName "bin"
+        $javaExe = Join-Path $binPath "java.exe"
+        $javacExe = Join-Path $binPath "javac.exe"
+
+        if (-not (Test-Path $javaExe) -or -not (Test-Path $javacExe)) {
+            Write-Host "`n[WARN] JDK folder '$($dir.Name)' exists but required binaries are missing." -ForegroundColor Yellow
+            Write-Host "[INFO] Attempting to delete broken JDK installation: $($dir.FullName)" -ForegroundColor Cyan
+            try {
+                Remove-Item -Path $dir.FullName -Recurse -Force -ErrorAction Stop
+                Write-Host "[OK] Broken JDK installation removed." -ForegroundColor Green
+                $foundBroken = $true
+            }
+            catch {
+                Write-Host "[FAIL] Could not delete $($dir.FullName). Please delete manually." -ForegroundColor Red
+                exit 1
+            }
+        }
+    }
+
+    if ($foundBroken) {
+        Start-Sleep -Seconds 1
+    }
+}
+
+# Step 3: Download Oracle JDK
 Write-Host "`n[INFO] Downloading Oracle Java JDK 21 installer..."
 [System.Console]::Out.Flush()
 
-# Oracle JDK 21 LTS (Windows x64)
 $javaUrl = "https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe"
 $installerPath = "$env:TEMP\oracle-jdk-installer.exe"
 
-# suppresses native progress bars (e.g. Invoke-WebRequest); not needed here but used for safety measures
 $ProgressPreference = 'SilentlyContinue'
 Add-Type -AssemblyName System.Net.Http
 
-$client = New-Object System.Net.Http.HttpClient
-$response = $client.GetAsync($javaUrl, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
-$totalBytes = $response.Content.Headers.ContentLength
-$stream = $response.Content.ReadAsStreamAsync().Result
+# To handle network download failures
+try {
+    $client = New-Object System.Net.Http.HttpClient
+    $response = $client.GetAsync($javaUrl, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
 
-Show-DownloadProgress -inputStream $stream -totalBytes $totalBytes -outputPath $installerPath
+    if (-not $response.IsSuccessStatusCode) {
+        Write-Host "`n[FAIL] Failed to download Java installer. HTTP Status: $($response.StatusCode)" -ForegroundColor Red
+        exit 1
+    }
 
-# installing Java from the .exe file downloaded previously
-Write-Host "[INFO] Installing Oracle JDK 21 silently..." 
+    $totalBytes = $response.Content.Headers.ContentLength
+    $stream = $response.Content.ReadAsStreamAsync().Result
+
+    Show-DownloadProgress -inputStream $stream -totalBytes $totalBytes -outputPath $installerPath
+}
+catch {
+    Write-Host "`n[FAIL] Network error while downloading Java. Please check your connection and try again." -ForegroundColor Red
+    exit 1
+}
+
+
+# Step 4: Install Java silently
+Write-Host "[INFO] Installing Oracle JDK 21 silently..."
 Write-Host "[INFO] This will install system-wide and may prompt for admin rights." -ForegroundColor Cyan
 
 try {
@@ -73,22 +121,18 @@ try {
         -Wait `
         -Verb RunAs
 
-    Write-Host "`[OK] Java installation completed. Verifying..." -ForegroundColor Green
+    Write-Host "`n[OK] Java installation completed. Verifying..." -ForegroundColor Green
 }
 catch {
     Write-Host "[FAIL] Oracle JDK installer failed or was denied." -ForegroundColor Red
     exit 1
 }
 
-# update current session PATH to detect new java
+# Step 5: Update session PATH and set JAVA_HOME
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
-
-# added delay to handle slow registry/ENV propagation
 Start-Sleep -Seconds 2
 
-# setting JAVA_HOME if possible
 Write-Host "`n[INFO] Attempting to set JAVA_HOME..."
-$javaInstallRoot = "C:\Program Files\Java"
 $jdkDir = Get-ChildItem $javaInstallRoot -Directory | Where-Object { $_.Name -like "jdk*" } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
 if ($jdkDir) {
@@ -113,17 +157,15 @@ else {
     Write-Host "[WARN] Could not detect JDK installation directory." -ForegroundColor Yellow
 }
 
-# checking if java is correctly installed by checking java -version and javac -version
+# Step 6: Verify installation
 Write-Host "`n[INFO] Verifying Java installation..."
 $javaOK = $false
 $javacOK = $false
 
-# checking the command : java -version
 try {
     $versionRaw = & java -version 2>&1 | Out-String
     $lines = $versionRaw -split "`n"
     $firstLine = $lines[0] -replace "^\s*java(\.exe)?\s*:\s*", ""
-
     if ($firstLine -match 'version\s+"(\d+\.\d+.*?)"') {
         Write-Host "[OK] java command available: $firstLine" -ForegroundColor Green
         $javaOK = $true
@@ -131,7 +173,6 @@ try {
 }
 catch {}
 
-# checking the command : javac --version
 try {
     $javacVersion = javac -version 2>&1
     if ($javacVersion -match "javac\s+\d+\.\d+") {
@@ -148,22 +189,18 @@ else {
     Write-Host "[OK] Java installed" -ForegroundColor Green
 }
 
-# executing hello.java to test one final time
+# Step 7: Run hello.java
 Write-Host "`n[INFO] Running final Java verification with hello.java"
-
 $javaFile = Join-Path $PSScriptRoot "..\scripts\hello.java"
 $javaDir = Split-Path $javaFile
 
-# step1 : compile
 Write-Host "[INFO] Step 1: Compiling hello.java"
 & javac $javaFile
-
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[FAIL] Compilation failed." -ForegroundColor Red
     exit 1
 }
 
-# step2 : run
 Write-Host "[INFO] Step 2: Running compiled Java program..."
 Push-Location $javaDir
 & java hello
@@ -176,25 +213,12 @@ else {
     Write-Host "[FAIL] hello.java execution failed." -ForegroundColor Red
 }
 
-# Final version check for DevEnvx CLI to handle exit
+# Step 8: Final check for CLI
 $javaOK = $false
 $javacOK = $false
 
-try {
-    & java -version > $null 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        $javaOK = $true
-    }
-}
-catch {}
-
-try {
-    & javac -version > $null 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        $javacOK = $true
-    }
-}
-catch {}
+try { & java -version > $null 2>&1; if ($LASTEXITCODE -eq 0) { $javaOK = $true } } catch {}
+try { & javac -version > $null 2>&1; if ($LASTEXITCODE -eq 0) { $javacOK = $true } } catch {}
 
 if ($javaOK -and $javacOK) {
     exit 0
@@ -203,4 +227,4 @@ else {
     exit 1
 }
 
-Remove-Item $installerPath -Force
+Remove-Item $installerPath -Force -ErrorAction SilentlyContinue

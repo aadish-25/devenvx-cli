@@ -82,6 +82,6 @@ if ($javaUninstallEntry) {
 }
 else {
     # Show a warning if valid entry was not found (either not installed or has already been removed)
-    Write-Host "`n[WARN] Java does not appear to be installed or was already removed." -ForegroundColor Yellow
+    Write-Host "`n[WARN] Java does not appear to be installed or was already removed.`n" -ForegroundColor Yellow
     exit 0
 }

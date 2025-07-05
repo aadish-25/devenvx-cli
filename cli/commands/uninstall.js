@@ -28,7 +28,8 @@ export async function handleUninstall(language) {
   const script = scriptMap[lang];
 
   if (!script) {
-    console.log(chalk.red(`[FAIL] Unsupported language: ${language}`));
+    console.log(chalk.yellow(`\n[WARN] '${language}' is not a supported language.`));
+    console.log(chalk.gray(`[HINT] Use ${chalk.cyan('npx devenvx list')} to see all supported languages.\n`));
     return;
   }
 

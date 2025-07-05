@@ -74,7 +74,7 @@ foreach ($tool in $cppTools) {
 
 # No toolchain found i.e MSYS2, MinGW or MinGW64 were not found
 if (-not $foundAny) {
-    Write-Host "`n[WARN] C++ toolchain does not appear to be installed or was already removed." -ForegroundColor Yellow
+    Write-Host "`n[WARN] C++ toolchain does not appear to be installed or was already removed.`n" -ForegroundColor Yellow
     exit 0
 }
 # Toolchain uninstalled successfully

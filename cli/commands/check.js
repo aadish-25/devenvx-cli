@@ -6,28 +6,20 @@
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 
-// Function that shows the 'devenvx' installation command if langauge isn't present 
+// Function that shows the 'devenvx' installation command if language isn't present
 const installHelp = (language) => {
   return chalk.yellow(
     `👉 You can try installing it using: ${chalk.cyan(`devenvx install ${language}`)}`
   );
 };
 
-// Function that runs version check for the language
-// This is done by checking their versions using --version(or -version for some tools) 
+// Function to check command version
 const checkCommand = (cmd, cmdName, language, versionFlag = '--version') => {
-
-  // Runs the specified command synchronously with the version flag (e.g., `g++ --version`).
-  // The `2>&1` ensures that both standard output and error streams are captured,
-  // since some tools output their version info to stderr instead of stdout.
   try {
     const output = execSync(`${cmd} ${versionFlag} 2>&1`, {
       encoding: 'utf8',
     });
-
-    // Extracts version from the output
     const versionLine = output.split('\n').find(line => line.trim())?.trim() || 'Unknown';
-
     console.log(
       `${chalk.green('✅')} ${chalk.bold(cmdName)} is installed. ${chalk.gray('Version:')} ${chalk.cyan(versionLine)}`
     );
@@ -40,100 +32,81 @@ const checkCommand = (cmd, cmdName, language, versionFlag = '--version') => {
   }
 };
 
-// Main function called when user runs: devenvx check <language>
-// It checks the installation status of tools required for the given language.
-export function handleCheck(language) {
-  console.log(chalk.bold(`\n🔍 Checking tools for language: ${chalk.blue(language)}\n`));
-
-  // allOk is a status tracker — a boolean (true or false) that keeps track of whether all required tools were successfully found for a given language.
-  let allOk = true;
-
-  // Python check (we check both python and python3)
-  if (language === 'python') {
+// List of dynamically supported check handlers
+const checkHandlers = {
+  python: () => {
     let found = false;
-
     try {
       const output = execSync('python --version 2>&1', { encoding: 'utf8' });
       const version = output.split('\n').find(line => line.trim())?.trim() || 'Unknown';
-
       console.log(`${chalk.green('✅')} Python (python) is installed. ${chalk.gray('Version:')} ${chalk.cyan(version)}`);
       found = true;
-      allOk = true;
     } catch { }
 
     if (!found) {
       try {
         const output = execSync('python3 --version 2>&1', { encoding: 'utf8' });
         const version = output.split('\n').find(line => line.trim())?.trim() || 'Unknown';
-
         console.log(`${chalk.green('✅')} Python (python3) is installed. ${chalk.gray('Version:')} ${chalk.cyan(version)}`);
         found = true;
-        allOk = true;
       } catch { }
     }
 
     if (!found) {
       console.log(`${chalk.red('❌')} Python is not installed or not working properly.`);
-      console.log(installHelp(language));
-      console.log();
-      allOk = false;
+      console.log(installHelp('python'));
+      return false;
     }
-  }
 
-  // Java check (runtime and compiler checks)
-  else if (language === 'java') {
-    allOk &&= checkCommand('java', 'Java Runtime (java)', language, '-version');
-    allOk &&= checkCommand('javac', 'Java Compiler (javac)', language);
-  }
+    return true;
+  },
 
-  // CPP check (g++, gcc and gdc)
-  else if (language === 'cpp') {
-    allOk &&= checkCommand('g++', 'C++ Compiler (g++)', language);
-    allOk &&= checkCommand('gcc', 'C Compiler (gcc)', language);
-    allOk &&= checkCommand('gdb', 'Debugger (gdb)', language);
-  }
+  java: () =>
+    checkCommand('java', 'Java Runtime (java)', 'java', '-version') &&
+    checkCommand('javac', 'Java Compiler (javac)', 'java'),
 
-  // Nodejs check
-  else if (language === 'node') {
-    allOk &&= checkCommand('node', 'Node.js (node)', language);
-  }
+  cpp: () =>
+    checkCommand('g++', 'C++ Compiler (g++)', 'cpp') &&
+    checkCommand('gcc', 'C Compiler (gcc)', 'cpp') &&
+    checkCommand('gdb', 'Debugger (gdb)', 'cpp'),
 
-  // PHP check
-  else if (language === 'php') {
-    allOk &&= checkCommand('php', 'PHP (php)', language);
-  }
+  node: () =>
+    checkCommand('node', 'Node.js (node)', 'node'),
 
-  // Go check
-  else if (language === 'go') {
-    allOk &&= checkCommand('go', 'Go (go)', language);
-  }
+  php: () =>
+    checkCommand('php', 'PHP (php)', 'php'),
 
-  // Ruby check
-  else if (language === 'ruby') {
-    allOk &&= checkCommand('ruby', 'Ruby (ruby)', language);
-  }
+  go: () =>
+    checkCommand('go', 'Go (go)', 'go'),
 
-  // C check
-  else if (language === 'c') {
-    allOk &&= checkCommand('gcc', 'C Compiler (gcc)', language);
-  }
+  ruby: () =>
+    checkCommand('ruby', 'Ruby (ruby)', 'ruby'),
 
-  // Rust check (rustc and cargo)
-  else if (language === 'rust') {
-    allOk &&= checkCommand('rustc', 'Rust Compiler (rustc)', language);
-    allOk &&= checkCommand('cargo', 'Rust Package Manager (cargo)', language);
-  }
+  c: () =>
+    checkCommand('gcc', 'C Compiler (gcc)', 'c'),
 
-  // Fallback for unsupported languages
-  else {
-    console.log(chalk.red(`❌ Unsupported language: ${language}\n`));
+  rust: () =>
+    checkCommand('rustc', 'Rust Compiler (rustc)', 'rust') &&
+    checkCommand('cargo', 'Rust Package Manager (cargo)', 'rust'),
+};
+
+// Main function called when user runs: devenvx check <language>
+export function handleCheck(language) {
+  const checkFn = checkHandlers[language];
+
+  if (!checkFn) {
+    console.log(chalk.yellow(`\n[WARN] '${language}' is not a supported language.`));
+    console.log(chalk.gray(`[HINT] Use ${chalk.cyan('npx devenvx list')} to see all supported languages.\n`));
     return;
   }
 
-  // Final check: if all required tools are available
+  console.log(chalk.bold(`\n🔍 Checking tools for language: ${chalk.blue(language)}\n`));
+
+  const allOk = checkFn();
+
   if (allOk) {
     console.log(chalk.greenBright(`\n🎉 All required tools for ${language} are installed and working properly!\n`));
   } else {
-    console.log(chalk.yellowBright(`\n⚠️ Some required tools for ${language} are missing or broken.\n`));
+    console.log(chalk.yellowBright(`⚠️ Some required tools for ${language} are missing or broken.\n`));
   }
-} 
+}

@@ -1,7 +1,7 @@
 <h1 align="center">
   🚀 DevEnvx CLI  
   <br>
-  <a href="="https://www.npmjs.com/package/devenvx">
+  <a href="https://www.npmjs.com/package/devenvx">
     <img src="https://img.shields.io/badge/npm-devenvx-blue" alt="npm">
   </a>
   <a href="https://github.com/aadish-25/devenvx-cli">

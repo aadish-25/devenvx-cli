@@ -1,10 +1,12 @@
 {
   "name": "devenvx",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "DevEnvx is a zero-install CLI tool that sets up full development environments (Python, Java, C++, and more) on Windows using one simple command. No downloads, no browser — just run and code.",
+  "main": "./cli/main.js",
   "type": "module",
-  "os": ["win32"],
-  
+  "os": [
+    "win32"
+  ],
   "bin": {
     "devenvx": "./cli/index.js"
   },
@@ -16,9 +18,22 @@
     "type": "git",
     "url": "git+https://github.com/aadish-25/devenvx-cli.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "cli",
+    "development",
+    "environment",
+    "setup",
+    "windows",
+    "installer",
+    "python",
+    "java",
+    "cpp"
+  ],
+  "author": {
+    "name": "Aadish Sonawane",
+    "url": "https://github.com/aadish-25"
+  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/aadish-25/devenvx-cli/issues"
   },
@@ -27,7 +42,6 @@
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
     "figlet": "^1.8.1",
-    "nanospinner": "^1.2.2",
-    "ora": "^8.2.0"
+    "nanospinner": "^1.2.2"
   }
 }

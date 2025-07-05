@@ -165,6 +165,17 @@ DevEnvx uses Node.js and PowerShell to create a seamless installation experience
 
 ---
 
+
+## 📚 PowerShell Documentation
+
+To understand how DevEnvx works under the hood, including all PowerShell flags, behaviors, and scripting logic used in our installers and uninstallers:
+
+🔗 [docs/powershell-notes.md](./docs/powershell-notes.md)
+
+This guide is beginner-friendly and explains every flag and concept used in the project — a must-read if you're exploring or contributing.
+
+---
+
 ## 🔍 Real-World Use Cases
 
 - **Developer Onboarding** — Get new team members coding in minutes with a complete environment setup.  

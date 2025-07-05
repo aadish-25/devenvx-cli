@@ -38,6 +38,9 @@
     "url": "https://github.com/aadish-25/devenvx-cli/issues"
   },
   "homepage": "https://github.com/aadish-25/devenvx-cli#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",

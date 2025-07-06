@@ -63,9 +63,12 @@ Your environment is ready to use right away — no terminal restart needed.
 python --version
 ```
 
-> ⚠️ **Having issues running the command in PowerShell?**  
-Try running it in **Command Prompt (`cmd`)** instead.  
-Or [see the solution below](#troubleshooting-powershell-script-execution-error) to fix PowerShell restrictions.
+> ℹ️ **Note:**  
+> The first time you run `npx devenvx`, npm may ask:  
+> `Need to install the following packages: devenvx... Ok to proceed? (y)`  
+> Just type `y` — from next time, it runs instantly without prompts.
+
+> ⚠️ Having issues running DevEnvx in PowerShell? [Click here to troubleshoot.](#-powershell-troubleshooting)
 
 ---
 
@@ -177,30 +180,6 @@ This guide is beginner-friendly and explains every flag and concept used in the 
 
 ---
 
-## Troubleshooting: PowerShell Script Execution Error
-
-If you encounter this error while running `npx devenvx`:
-
-```
-npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system.
-```
-
-It means your system has **PowerShell script execution disabled** by default.
-
-### ✅ Quick Fix (Recommended)
-
-Run the following **as Administrator** in PowerShell:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-Then confirm with `Y`.
-
-This allows trusted scripts (like from `npx`) to run without affecting system security.
-
----
-
 ## 🔍 Real-World Use Cases
 
 - **Developer Onboarding** — Get new team members coding in minutes with a complete environment setup.  
@@ -256,3 +235,41 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 <p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>.</em></p>
 
 <p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>
+
+---
+
+## 🧠 PowerShell Troubleshooting
+
+If you see an error like this when running `npx devenvx`:
+
+```
+npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+
+It means your system's **PowerShell script execution policy is restricted**.
+
+### ✅ Fix Option 1: Run in CMD Instead
+
+Just open **Command Prompt (cmd.exe)** and run the same command:
+
+```bash
+npx devenvx
+```
+
+CMD doesn’t enforce PowerShell script execution policies, so it works out of the box.
+
+### ✅ Fix Option 2: Allow PowerShell Scripts Temporarily
+
+You can temporarily allow scripts for just the current session:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Then run:
+
+```powershell
+npx devenvx
+```
+
+This change is **temporary** and reverts when you close the terminal.

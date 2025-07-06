@@ -63,34 +63,9 @@ Your environment is ready to use right away — no terminal restart needed.
 python --version
 ```
 
----
-
-> ℹ️ **Note:**  
-The first time you run `npx devenvx`, npm may ask:  
-`Need to install the following packages: devenvx... Ok to proceed? (y)`  
-Just type `y` — from next time, it runs instantly without prompts.
-
-<details>
-<br>
-<summary>⚠️ PowerShell users: If you see a "script execution is restricted" error</summary>
-
-If running `npx devenvx` shows an error like:
-
-```
-npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system...
-```
-
-This happens because **PowerShell restricts script execution by default** on some systems.
-
-✅ To fix it, open PowerShell and run:
-
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-Alternatively, run the command from **Command Prompt (cmd.exe)** or **Git Bash**, which don't block scripts.
-
-</details>
+> ⚠️ **Having issues running the command in PowerShell?**  
+Try running it in **Command Prompt (`cmd`)** instead.  
+Or [see the solution below](#troubleshooting-powershell-script-execution-error) to fix PowerShell restrictions.
 
 ---
 
@@ -199,6 +174,30 @@ To understand how DevEnvx works under the hood, including all PowerShell flags, 
 🔗 [docs/powershell-notes.md](./docs/powershell-notes.md)
 
 This guide is beginner-friendly and explains every flag and concept used in the project — a must-read if you're exploring or contributing.
+
+---
+
+## Troubleshooting: PowerShell Script Execution Error
+
+If you encounter this error while running `npx devenvx`:
+
+```
+npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+
+It means your system has **PowerShell script execution disabled** by default.
+
+### ✅ Quick Fix (Recommended)
+
+Run the following **as Administrator** in PowerShell:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Then confirm with `Y`.
+
+This allows trusted scripts (like from `npx`) to run without affecting system security.
 
 ---
 

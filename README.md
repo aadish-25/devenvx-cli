@@ -231,8 +231,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-<p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>. No downloads. Just run it.</em></p>
+<p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>.</em></p>
 
 <p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>
-
-<p align="center"><strong>Run anywhere, anytime. Powered by npm.</strong></p>

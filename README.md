@@ -70,6 +70,28 @@ The first time you run `npx devenvx`, npm may ask:
 `Need to install the following packages: devenvx... Ok to proceed? (y)`  
 Just type `y` — from next time, it runs instantly without prompts.
 
+<details>
+<br>
+<summary>⚠️ PowerShell users: If you see a "script execution is restricted" error</summary>
+
+If running `npx devenvx` shows an error like:
+
+```
+npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system...
+```
+
+This happens because **PowerShell restricts script execution by default** on some systems.
+
+✅ To fix it, open PowerShell and run:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Alternatively, run the command from **Command Prompt (cmd.exe)** or **Git Bash**, which don't block scripts.
+
+</details>
+
 ---
 
 ## 🛠️ Features That Set DevEnvx Apart

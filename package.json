@@ -1,6 +1,6 @@
 {
   "name": "devenvx",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "DevEnvx is a zero-install CLI tool that sets up full development environments (Python, Java, C++, and more) on Windows using one simple command. No downloads, no browser — just run and code.",
   "main": "./cli/main.js",
   "type": "module",

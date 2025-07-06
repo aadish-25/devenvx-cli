@@ -16,7 +16,7 @@ const program = new Command();
 
 program
     .name("devenvx")
-    .version("1.0.0");
+    .version("1.1.0");
 
 if (process.argv.length <= 2) {
     console.log(chalk.cyanBright.bold("\n🚀 Welcome to DevEnvx CLI\n"));

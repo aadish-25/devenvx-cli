@@ -28,7 +28,7 @@ try {
         # s - one or more spaces
         # d - one or more digits
         # Captures something like - Python 3.1.1
-        Write-Host "[SUCCESS] Python is already installed: $version" -ForegroundColor Green
+        Write-Host "[SUCCESS] Python is already installed: $version`n" -ForegroundColor Green
         exit 0
     }
     else {

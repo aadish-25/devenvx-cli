@@ -46,4 +46,6 @@ program
     .description("Show all supported languages")
     .action(handleList);
 
+program.addHelpText('afterAll', '\n');
+
 program.parse(process.argv);

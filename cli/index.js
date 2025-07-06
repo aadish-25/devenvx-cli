@@ -22,7 +22,7 @@ if (process.argv.length <= 2) {
     console.log(chalk.cyanBright.bold("\n🚀 Welcome to DevEnvx CLI\n"));
     console.log(chalk.red(figlet.textSync("DevEnvx", { font: "ANSI Shadow" })));
 
-    console.log(chalk.blueBright("⚙️\u00A0 DevEnvx CLI - Install and manage C++, Java, and Python environments"));
+    console.log(chalk.blueBright("⚙️\u00A0DevEnvx CLI - Install and manage C++, Java, and Python environments"));
     console.log(chalk.greenBright("✨ Use ") + chalk.yellowBright("devenvx --help") + chalk.greenBright(" to get started!\n"));
 }
 

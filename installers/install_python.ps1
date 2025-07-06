@@ -151,7 +151,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 else {
     Write-Host ""
-    Write-Host -ForegroundColor Green "[SUCCESS] Python has been successfully installed and verified!`n"
+    Write-Host -ForegroundColor Green "[SUCCESS] Python has been successfully installed and verified!"
+    Write-Host ""
     
     # Clean up by removing the downloaded installer file
     Remove-Item $installerPath -Force -ErrorAction SilentlyContinue

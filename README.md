@@ -65,6 +65,12 @@ python --version
 
 ---
 
+> ℹ️ **Note:**  
+The first time you run `npx devenvx`, npm may ask:  
+`Need to install the following packages: devenvx... Ok to proceed? (y)`  
+Just type `y` — from next time, it runs instantly without prompts.
+
+
 ## 🛠️ Features That Set DevEnvx Apart
 
 - **Smart Installation** — Automatically detects existing installations and skips unnecessary downloads  

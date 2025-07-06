@@ -248,28 +248,12 @@ npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scri
 
 It means your system's **PowerShell script execution policy is restricted**.
 
-### ✅ Fix Option 1: Run in CMD Instead
+### ✅ Fix: Allow PowerShell Scripts Permanently (Safe)
 
-Just open **Command Prompt (cmd.exe)** and run the same command:
-
-```bash
-npx devenvx
-```
-
-CMD doesn’t enforce PowerShell script execution policies, so it works out of the box.
-
-### ✅ Fix Option 2: Allow PowerShell Scripts Temporarily
-
-You can temporarily allow scripts for just the current session:
+To allow trusted scripts to run in all PowerShell sessions for your user account, run:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 ```
 
-Then run:
-
-```powershell
-npx devenvx
-```
-
-This change is **temporary** and reverts when you close the terminal.
+This is a **safe and permanent fix** that enables locally created or signed scripts — without affecting system-wide security.

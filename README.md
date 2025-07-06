@@ -227,7 +227,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 🤝 Acknowledgments
 
-- Thanks to all contributors who have helped shape DevEnvx  
 - Built with [Node.js](https://nodejs.org/) and [PowerShell](https://github.com/PowerShell/PowerShell)  
 
 ---

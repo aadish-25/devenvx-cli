@@ -49,11 +49,29 @@ That’s it. **No global installation. No browser. No configuration.**
 npx devenvx
 ```
 
+> ▸ Prefer using it globally? Install once with:
+>
+> ```bash
+> npm install -g devenvx
+> ```
+>
+> Then run it anytime with:
+>
+> ```bash
+> devenvx
+> ```
+
 ### 2. Set up your desired programming language:
 
 ```bash
 npx devenvx install python
 ```
+
+> ▸ Using the global install? Run:
+>
+> ```bash
+> devenvx install python
+> ```
 
 ### 3. Start coding instantly
 
@@ -68,8 +86,8 @@ python --version
 > `Need to install the following packages: devenvx... Ok to proceed? (y)`  
 > Just type `y` — from next time, it runs instantly without prompts.
 
-> ⚠️ Having issues running DevEnvx in PowerShell? [Click here to troubleshoot.](#-powershell-troubleshooting)
-
+> ⚠️ **Having issues running DevEnvx in PowerShell?** [Click here to troubleshoot.](#-powershell-troubleshooting)
+> 
 ---
 
 ## 🛠️ Features That Set DevEnvx Apart

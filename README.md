@@ -243,19 +243,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 - [ ] Cross-platform support (macOS, Linux)  
 
 ---
-
-## 🤝 Acknowledgments
-
-- Built with [Node.js](https://nodejs.org/) and [PowerShell](https://github.com/PowerShell/PowerShell)  
-
----
-
-<p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>.</em></p>
-
-<p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>
-
----
-
 ## 🧠 PowerShell Troubleshooting
 
 If you see an error like this when running `npx devenvx`:
@@ -275,3 +262,15 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 ```
 
 This is a **safe and permanent fix** that enables locally created or signed scripts — without affecting system-wide security.
+
+---
+
+## 🤝 Acknowledgments
+
+- Built with [Node.js](https://nodejs.org/) and [PowerShell](https://github.com/PowerShell/PowerShell)  
+
+---
+
+<p align="center"><em>DevEnvx is available globally via the world's largest package registry — <strong>npm</strong>.</em></p>
+
+<p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>

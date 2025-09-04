@@ -90,6 +90,32 @@ python --version
 > 
 ---
 
+## 🆕 New: React + Vite + Tailwind Setup
+
+DevEnvx now **creates fully configured React projects with Vite + Tailwind v3.4.17**, eliminating the usual headaches of manual setup, installation errors, and countless configuration bugs.
+
+### Create a new React project effortlessly:
+
+```bash
+npx devenvx react-vite-tailwind my-app
+```
+
+- **Skip the struggle:** Automatically sets up React + Vite with Tailwind ready to go
+- **No manual installation** of TailwindCSS required
+- **Cleans unnecessary default files** (`App.css`, `index.css`, `logo.svg`)
+- **Provides a minimal `App.jsx` and `index.css`** configured with Tailwind directives
+
+### Run your project immediately:
+
+```bash
+cd my-app
+npm run dev
+```
+
+> 💡 **Save time and avoid errors:** DevEnvx handles all setup, so you can start building React apps instantly without dealing with Tailwind configuration issues.
+
+---
+
 ## 🛠️ Features That Set DevEnvx Apart
 
 - **Smart Installation** — Automatically detects existing installations and skips unnecessary downloads  
@@ -198,6 +224,26 @@ This guide is beginner-friendly and explains every flag and concept used in the 
 
 ---
 
+## 🧠 PowerShell Troubleshooting
+
+If you see an error like this when running `npx devenvx`:
+
+```
+npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+
+It means your system's **PowerShell script execution policy is restricted**.
+
+### ✅ Fix: Allow PowerShell Scripts Permanently (Safe)
+
+To allow trusted scripts to run in all PowerShell sessions for your user account, run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+```
+
+This is a **safe and permanent fix** that enables locally created or signed scripts — without affecting system-wide security.
+
 ## 🔍 Real-World Use Cases
 
 - **Developer Onboarding** — Get new team members coding in minutes with a complete environment setup.  
@@ -255,23 +301,3 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 <p align="center"><strong>DevEnvx: Because setting up your development environment shouldn't be harder than actual coding.</strong></p>
 
 ---
-
-## 🧠 PowerShell Troubleshooting
-
-If you see an error like this when running `npx devenvx`:
-
-```
-npx : File C:\Program Files\nodejs\npx.ps1 cannot be loaded because running scripts is disabled on this system.
-```
-
-It means your system's **PowerShell script execution policy is restricted**.
-
-### ✅ Fix: Allow PowerShell Scripts Permanently (Safe)
-
-To allow trusted scripts to run in all PowerShell sessions for your user account, run:
-
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-```
-
-This is a **safe and permanent fix** that enables locally created or signed scripts — without affecting system-wide security.

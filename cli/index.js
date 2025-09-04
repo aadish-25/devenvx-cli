@@ -9,6 +9,7 @@ import { handleInstall } from "./commands/install.js";
 import { handleCheck } from './commands/check.js';
 import { handleUninstall } from './commands/uninstall.js';
 import { handleList } from "./commands/list.js";
+import { setupReact } from "./commands/reactSetup.js";
 
 ensureWindowsPlatform();
 
@@ -40,6 +41,11 @@ program
     .command("uninstall <language>")
     .description("Uninstall the development environment for the selected language")
     .action(handleUninstall);
+
+program
+    .command("react-vite-tailwind <app-name>")
+    .description("Set up a clean React + Vite project with TailwindCSS")
+    .action(setupReact)
 
 program
     .command("list")

@@ -94,6 +94,8 @@ export default defineConfig({
 `;
   fs.writeFileSync(viteConfigPath, viteConfig);
 
+  console.log(chalk.cyan("\n[INFO] Updated tailwind.config.js and vite.config.js"));
+
   console.log(chalk.greenBright("\n[SUCCESS] React + Vite + Tailwind v4.1 setup complete!"));
   if (appName === ".")
     console.log(chalk.greenBright("[INFO] npm install && npm run dev"));

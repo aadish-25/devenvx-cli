@@ -11,12 +11,16 @@ export async function setupReact(appName) {
 
   const appPath = appName === "." ? process.cwd() : path.join(process.cwd(), appName);
 
+  const currentWorkingDirectory = process.cwd();
+  const directoryName = path.basename(currentWorkingDirectory);
+
   if (appName !== "." && fs.existsSync(appPath)) {
     console.log(chalk.red(`[FAIL] Folder "${appName}" already exists!`));
     return;
   }
 
-  console.log(chalk.cyan(`[INFO] Creating React + Vite project: ${appName}`));
+  const displayName = appName === "." ? directoryName : appName;
+  console.log(chalk.cyan(`[INFO] Creating React + Vite project: ${displayName}`));
   try {
     const targetArg = appName === "." ? "." : appName;
     execSync(`npm create vite@latest ${targetArg} -- --template react`, { stdio: "inherit" });
@@ -36,12 +40,11 @@ export async function setupReact(appName) {
   // Minimal App.jsx
   const appJsx = `export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world
+    <h1 className="text-3xl font-bold underline bg-slate-600 h-screen p-3">
+      React + Vite + Tailwind — DevEnvx Setup
     </h1>
   );
-}
-`;
+}`;
   fs.writeFileSync(path.join(appPath, "src/App.jsx"), appJsx);
 
   // Minimal index.css with Tailwind directives
@@ -83,5 +86,10 @@ export default {
   fs.writeFileSync(tailwindConfigPath, tailwindConfig);
 
   console.log(chalk.greenBright("\n[SUCCESS] React + Vite + Tailwind v3.4.17 setup complete!"));
-  console.log(chalk.greenBright(`[INFO] cd ${appName === "." ? "." : appName} && npm run dev`));
+  if (appName === ".")
+    console.log(chalk.greenBright("[INFO] npm install && npm run dev"));
+  else
+    console.log(chalk.greenBright(`[INFO] cd ${appName} && npm install && npm run dev`));
+
+
 }

@@ -43,7 +43,7 @@ program
     .action(handleUninstall);
 
 program
-    .command("react-vite-tailwind <app-name>")
+    .command("create-react-vite-tailwind <app-name>")
     .description("Set up a clean React + Vite project with TailwindCSS")
     .action(setupReact)
 

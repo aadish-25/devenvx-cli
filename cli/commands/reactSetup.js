@@ -48,28 +48,22 @@ export async function setupReact(appName) {
   fs.writeFileSync(path.join(appPath, "src/App.jsx"), appJsx);
 
   // Minimal index.css with Tailwind directives
-  fs.writeFileSync(path.join(appPath, "src/index.css"), `@tailwind base;
-@tailwind components;
-@tailwind utilities;
-`);
+  fs.writeFileSync(
+    path.join(appPath, "src/index.css"),
+    `@import "tailwindcss";`
+  );
 
-  console.log(chalk.cyan("[INFO] Installing TailwindCSS v3.4.17..."));
+  console.log(chalk.cyan("[INFO] Installing TailwindCSS v4.1"));
   try {
-    execSync("npm install -D tailwindcss@3.4.17 postcss autoprefixer", { stdio: "inherit" });
+    execSync("npm install tailwindcss @tailwindcss/vite", { stdio: "inherit" });
   } catch {
     console.log(chalk.red("[FAIL] Could not install TailwindCSS dependencies."));
     return;
   }
 
-  console.log(chalk.cyan("\n[INFO] Initializing TailwindCSS config..."));
-  try {
-    execSync("npx tailwindcss init -p", { stdio: "inherit" });
-  } catch {
-    console.log(chalk.red("[FAIL] Could not initialize TailwindCSS config."));
-    return;
-  }
+  console.log(chalk.cyan("\n[INFO] Configuring TailwindCSS + Vite plugin..."));
 
-  // Update tailwind.config.js content
+  // Write tailwind.config.js (keep it minimal for future customization)
   const tailwindConfigPath = path.join(appPath, "tailwind.config.js");
   const tailwindConfig = `/** @type {import('tailwindcss').Config} */
 export default {
@@ -85,11 +79,24 @@ export default {
 `;
   fs.writeFileSync(tailwindConfigPath, tailwindConfig);
 
-  console.log(chalk.greenBright("\n[SUCCESS] React + Vite + Tailwind v3.4.17 setup complete!"));
+  // Write vite.config.js (overwrite, no replacing)
+  const viteConfigPath = path.join(appPath, "vite.config.js");
+  const viteConfig = `import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+})
+`;
+  fs.writeFileSync(viteConfigPath, viteConfig);
+
+  console.log(chalk.greenBright("\n[SUCCESS] React + Vite + Tailwind v4.1 setup complete!"));
   if (appName === ".")
     console.log(chalk.greenBright("[INFO] npm install && npm run dev"));
   else
     console.log(chalk.greenBright(`[INFO] cd ${appName} && npm install && npm run dev`));
-
-
 }

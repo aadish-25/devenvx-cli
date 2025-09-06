@@ -104,5 +104,4 @@ export default defineConfig({
   }
   console.log(chalk.white("  npm install"));
   console.log(chalk.white("  npm run dev\n"));
-
 }

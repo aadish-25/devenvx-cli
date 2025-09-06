@@ -104,6 +104,7 @@ npx devenvx react-vite-tailwind my-app
 - **No manual installation** of TailwindCSS required
 - **Cleans unnecessary default files** (`App.css`, `index.css`, `logo.svg`)
 - **Provides a minimal `App.jsx` and `index.css`** configured with Tailwind directives
+- Sets up `tailwind.config.js` and `vite.config.js` for **instant Tailwind usage**
 
 ### Run your project immediately:
 

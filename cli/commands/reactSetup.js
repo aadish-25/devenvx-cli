@@ -9,24 +9,31 @@ export async function setupReact(appName) {
     return;
   }
 
-  const appPath = appName === "." ? process.cwd() : path.join(process.cwd(), appName);
+  const appPath =
+    appName === "." ? process.cwd() : path.join(process.cwd(), appName);
 
   const currentWorkingDirectory = process.cwd();
   const directoryName = path.basename(currentWorkingDirectory);
 
   if (appName !== "." && fs.existsSync(appPath)) {
     console.log(
-      chalk.redBright(`[FAIL] Folder "${appName}" already exists. Choose a different name or remove the folder.\n`)
+      chalk.redBright(
+        `[FAIL] Folder "${appName}" already exists. Choose a different name or remove the folder.\n`
+      )
     );
     return;
   }
 
   const displayName = appName === "." ? directoryName : appName;
-  console.log(chalk.cyan(`[INFO] Creating React + Vite project: ${displayName}`));
+  console.log(
+    chalk.cyan(`[INFO] Creating React + Vite project: ${displayName}`)
+  );
 
   try {
     const targetArg = appName === "." ? "." : appName;
-    execSync(`npm create vite@latest ${targetArg} -- --template react`, { stdio: "inherit" });
+    execSync(`npm create vite@latest ${targetArg} -- --template react`, {
+      stdio: "inherit",
+    });
   } catch {
     console.log(chalk.red("[FAIL] Failed to create Vite project."));
     return;
@@ -44,23 +51,32 @@ export async function setupReact(appName) {
   const appJsx = `export default function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline bg-slate-600 h-screen p-3">
-        Jokes
-      </h1>
+      <div className="min-h-screen bg-slate-900 text-white p-6">
+        <h1 className="text-4xl font-bold underline mb-4">
+          Welcome to React + Tailwind
+        </h1>
+        <p className="text-slate-300">
+          🚀 Start building your app in <code>src/App.jsx</code>
+        </p>
+      </div>
     </>
   );
-}
-`;
+}`;
   fs.writeFileSync(path.join(appPath, "src/App.jsx"), appJsx);
 
   // Minimal index.css with Tailwind directives
-  fs.writeFileSync(path.join(appPath, "src/index.css"), `@import "tailwindcss";`);
+  fs.writeFileSync(
+    path.join(appPath, "src/index.css"),
+    `@import "tailwindcss";`
+  );
 
   console.log(chalk.cyan("[INFO] Installing TailwindCSS v4.1"));
   try {
     execSync("npm install tailwindcss @tailwindcss/vite", { stdio: "inherit" });
   } catch {
-    console.log(chalk.red("[FAIL] Could not install TailwindCSS dependencies."));
+    console.log(
+      chalk.red("[FAIL] Could not install TailwindCSS dependencies.")
+    );
     return;
   }
 
@@ -97,10 +113,16 @@ export default defineConfig({
 `;
   fs.writeFileSync(viteConfigPath, viteConfig);
 
-  console.log(chalk.cyan("[INFO] Updated tailwind.config.js and vite.config.js"));
+  console.log(
+    chalk.cyan("[INFO] Updated tailwind.config.js and vite.config.js")
+  );
 
-  console.log(chalk.greenBright("\n[SUCCESS] React + Vite + Tailwind v4.1 setup complete!"));
-  
+  console.log(
+    chalk.greenBright(
+      "\n[SUCCESS] React + Vite + Tailwind v4.1 setup complete!"
+    )
+  );
+
   console.log(chalk.white("\nDone. Now run the following commands:"));
   if (appName !== ".") {
     console.log(chalk.white(`  cd ${appName}`));

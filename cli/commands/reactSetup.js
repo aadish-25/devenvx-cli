@@ -43,11 +43,14 @@ export async function setupReact(appName) {
   // Minimal App.jsx
   const appJsx = `export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline bg-slate-600 h-screen p-3">
-      React + Vite + Tailwind — DevEnvx Setup
-    </h1>
+    <>
+      <h1 className="text-3xl font-bold underline bg-slate-600 h-screen p-3">
+        Jokes
+      </h1>
+    </>
   );
-}`;
+}
+`;
   fs.writeFileSync(path.join(appPath, "src/App.jsx"), appJsx);
 
   // Minimal index.css with Tailwind directives

@@ -56,6 +56,6 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "figlet": "^1.8.1"
+    "figlet": "^1.9.1"
   }
 }

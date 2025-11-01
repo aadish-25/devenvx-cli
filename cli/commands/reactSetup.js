@@ -26,22 +26,33 @@ export async function setupReact(appName) {
 
   const displayName = appName === "." ? directoryName : appName;
   console.log(
-    chalk.cyan(`[INFO] Creating React + Vite project: ${displayName}`)
+    chalk.cyan(`[INFO] Creating React + Vite project: ${displayName}\n`)
   );
 
   try {
     const targetArg = appName === "." ? "." : appName;
-    execSync(`npm create vite@latest ${targetArg} -- --template react`, {
-      stdio: "inherit",
-    });
-  } catch {
-    console.log(chalk.red("[FAIL] Failed to create Vite project."));
+    const result = execSync(
+      `(echo y & echo n) | npm create vite@latest ${targetArg} -- --template react`,
+      {
+        stdio: "pipe",
+        encoding: "utf8",
+        env: {
+          ...process.env,
+        },
+      }
+    );
+    console.log(chalk.green("[SUCCESS] Vite project created successfully"));
+  } catch (error) {
+    console.log(chalk.red("\n[FAIL] Failed to create Vite project."));
+    if (error.stderr) {
+      console.log(chalk.red("Error details:", error.stderr));
+    }
     return;
   }
 
   process.chdir(appPath);
 
-  console.log(chalk.cyan("[INFO] Cleaning unnecessary files..."));
+  console.log(chalk.cyan("\n[INFO] Cleaning unnecessary files..."));
   ["src/App.css", "src/index.css", "src/logo.svg"].forEach((file) => {
     const filePath = path.join(appPath, file);
     if (fs.existsSync(filePath)) fs.rmSync(filePath);
